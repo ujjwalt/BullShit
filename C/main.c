@@ -120,8 +120,7 @@ void yourchance() {
 	static int cows, bulls;
 	static char a[MAX];
 	printf("\n>");
-	strcpy(a, "1234");
-		//takenum(a);
+	takenum(a);
 	analyse(a, cnum, &cows, &bulls);
 	printTable(a, cows, bulls, NO);
 }
