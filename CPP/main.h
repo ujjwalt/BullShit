@@ -7,10 +7,10 @@
  *
  */
 
+#import <string>
+using namespace std;
+
 const int numLength = 4;
 
-#define YES (1)
-#define NO (0)
-
-void randnum(char a[numLength+1]);
-bool validate(char a[numLength+1]);
+void randnum(string &a);
+bool validate(string a);

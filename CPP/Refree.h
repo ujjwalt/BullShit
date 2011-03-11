@@ -7,17 +7,22 @@
  *
  */
 
-#import "main.h"
+#import <string>
 #import "Player.h"
 
-extern const int numLength;
+#define TABLE_DIFF (20)
+#define INITIAL_PAD (10)
 
-class Refree : public Player {
-	char userNumber[numLength+1], computerNumber[numLength+1];
-	bool gameOver;
+using namespace std;
+
+class Refree {
+	string player1Bet, player2Bet;
+	bool gameOver, gameStarted;
+	Player *player1, *player2;
+	
+	void setUpTable(void);
 public:
-	void startGame();
-	void analyse(char[numLength+1], char[numLength+1], int*, int*);
-	void printTable(const char [numLength+1], const int, const int, const bool);
-	bool validate(char a[numLength+1]);
+	void startGame(void);
+	void analyse(string input, string secret, int &cows, int &bulls);
+	void printTable(const string move, const int cows, const int bulls, const Player *p);
 };

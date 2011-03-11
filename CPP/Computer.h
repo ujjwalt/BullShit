@@ -7,7 +7,20 @@
  *
  */
 
-class Computer {
+#import <string>
+#import "Player.h"
+
+using namespace std;
+
+class Computer : public virtual Player {
+	static string *names;
+	static int count;
 public:
-	void makeMove();
+	Computer(void);
+	string getBet(void);
+	string makeMove(void);
+	void youLost(void);
+	void youMightLose(void);
+	string getName(void);
+	
 };

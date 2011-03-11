@@ -1,16 +1,18 @@
 #import <iostream>
+#import <stdlib.h>
+#import <time.h>
 #import "main.h"
-using namespace std;
+#import "Refree.h"
 
 extern const int numLength;
 
 int main (int argc, char * const argv[]) {
-    // insert code here...
-    cout << "Hello, World!\n";
+    Refree richard;
+	richard.startGame();
     return 0;
 }
 
-void randnum(char a[numLength+1]) {
+void randnum(string &a) {
 		//Generate a random number with unique digits
 	register int i;
 	srandom(time(NULL));
@@ -22,17 +24,17 @@ void randnum(char a[numLength+1]) {
 	a[numLength] = '\0';
 }
 
-bool validate(char a[numLength+1]) {
+bool validate(string a) {
 	int i, j;
 	if (a[0] == '0') {
-		return NO;
+		return false;
 	}
 	for (i = 0; i < numLength-1; i++) {
 		for (j = i+1; j < numLength; j++) {
 			if (a[i] == a[j] || !isdigit(a[i])) {
-				return NO;
+				return false;
 			}
 		}
 	}
-	return YES;
+	return true;
 }

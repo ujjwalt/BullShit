@@ -7,7 +7,18 @@
  *
  */
 
-class User {
-public:
+#import "Player.h"
+
+class User : public virtual Player {
+private:
+	string move;
 	
+	void youLost(void);
+	void youWin(void);
+	
+public:
+	string getBet(void);
+	string makeMove(void);
+	void youMightLose(void);
+	string getName(void);
 };

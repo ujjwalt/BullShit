@@ -13,7 +13,18 @@
 using namespace std;
 
 class Player {
-	string name;
+private:
+	virtual void youWon(void);
+	virtual void youLost(void);
+	
+protected:
+	string name, bet;
+	bool betsubmitted;
+	
 public:
-	void makeMove();
+	virtual string getBet(void);
+	virtual string makeMove(void);
+	virtual void youMightLose(void);
+	virtual void youMightWin(void);
+	string getName(void);
 };
