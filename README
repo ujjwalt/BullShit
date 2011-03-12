@@ -1,0 +1,8 @@
+This project is an implementation of the age old game of "Bulls & Cows"/"Cows & Bulls"
+in different languages and platforms.
+
+The aim is to add as much functionality as possible such as the following :-
+* Single User Mode
+* Multi User Mode
+  * The computer plays against
+  * Another player plays against you
