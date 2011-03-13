@@ -21,7 +21,6 @@ int main (int argc, const char * argv[]) {
 	randnum(cnum);	
 		// Ask the user his name and number?
 	printf("Whats your name hobbit ? Just your name !\n");
-		//strcpy(uname, "JFK");
 	scanf("%s", uname);
 	lpadding = strlen(uname);
 	printf("Enter your bet !");
@@ -140,7 +139,7 @@ bool validate(char a[MAX]) {
 	return YES;
 }
 
-/* *************************************************************************************************************************/
+/**************************************************************************************************************************/
 
 #pragma mark Computer
 
@@ -394,7 +393,6 @@ void intermediateDeduction() {
 			// If the digit is true then increase the count
 		if (nums[i] == YES) {
 			count++;
-				//printf("\n%d confirmed\n", i);
 		}
 		
 			// If the digit is false then increase the "NO" count else add it to tobeConfirmed[]
@@ -416,10 +414,8 @@ void intermediateDeduction() {
 		 must be true*/
 		for (int i = 0; i < c; i++) {
 			nums[tobeConfirmed[i]-'0'] = YES;
-				//printf("Confirming %c\n", tobeConfirmed[i]);
 		}
 		digitsConfirmed = YES;
-			//printf("\nfound intermediately\n");
 		return;
 	}
 }
@@ -451,7 +447,6 @@ void analysedDeduction() {
 	if (noCount == NUM-(cows+bulls)) {
 		for (int i = 0; i < notNoCount; i++) {
 			nums[notNoStack[i]-'0'] = YES;
-				//printf("Confirming %c\n", notNoStack[i]-'0');
 		}
 	}
 }
@@ -674,7 +669,6 @@ void rearrange() {
 		if (nums[primary[i]-'0'] != YES) {
 			for (int j = 0; j < 10; j++) {
 				if (nums[j] == YES) {
-						//printf("\n=>%d", j);
 					for (int k = 0; k < NUM; k++) {
 						if (j+'0' == primary[k]) {
 							found = YES;
@@ -696,7 +690,6 @@ void rearrange() {
 			}
 		}
 	}
-		//printf("\nprimary after replacing bad digits = %s\n", primary);
 		// Set count of digits whose position is not confirmed to 0
 	int posNotConfirmedCount = 0;
 	char s[MAX];
@@ -735,7 +728,7 @@ void rearrange() {
 		posNotConfirmed[1] = temp;
 		merge();
 	}
-		// Pad the ending of s[] with '\0' for [roper copying in strcpy()
+		// Pad the ending of s[] with '\0' for proper copying in strcpy()
 	s[NUM] = '\0';
 		// Copy the prepared s[] to primary
 	strcpy(primary, s);
@@ -756,7 +749,6 @@ void permutate(void) {
 	} else {
 		positionDeduce();
 	}
-	//printf("I the permutate called\n");
 	post(primary);
 }
 
@@ -892,8 +884,6 @@ void shiftLeft(char v[],int go,int n)
 }
 
 void theCaseThree() {
-		//permute(posNotConfirmed, 0, 3);
-		//return;
 	static int chance;
 	static int firstBull;
 	static char a, b, c;
@@ -909,7 +899,7 @@ void theCaseThree() {
 		switch (chance) {
 			case 1:
 					// Swap the digits at second position and 3rd positon => b and c
-					// *Note - No one touches the guy at position no.1 - he's the King
+					// * Note - No one touches the guy at position no.1 - he's the King
 				printf("\nThe case 3;) = %s\n", primary);
 				posNotConfirmed[1] = c;
 				posNotConfirmed[2] = b;
@@ -939,7 +929,7 @@ void theCaseThree() {
 	} else {
 		permute(posNotConfirmed, 0, 3);
 	}
-
+	
 }
 
 char pop() {
