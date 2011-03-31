@@ -3,7 +3,6 @@
  *  Cows&Bulls
  *
  *  Created by Ujjwal Thaakar on 04/03/11.
- *  Copyright 2011 Nirma University. All rights reserved.
  *
  */
 
@@ -31,7 +30,7 @@ int main (int argc, const char * argv[]) {
 	for (i = 0; i < TABLE_DIFF; i++) {
 		putchar(' ');
 	}
-	printf("The Godfather :(\t\tcows  bulls\n");
+	printf("The Godfather :|\t\tcows  bulls\n");
 	
 	while (YES) {
 		static int i = 1;
@@ -66,20 +65,20 @@ void analyse(char a[MAX], char b[MAX], int *cows, int *bulls) {
 void printTable(const char a[MAX], const int cows, const int bulls, const bool bycomp) {
 	static bool finished;
 	if (bycomp) {
-		for (int i = 0; i , i < TABLE_DIFF+6; i++) {
+		for (int i = 0; i < TABLE_DIFF+6; i++) {
 			putchar(' ');
 		}
 		printf("%s", a);
 		for (int i = 0; i < 12; i++) {
 			putchar(' ');
 		}
-		printf("\t\t%d     %d", cows, bulls);
+		printf("\t\t%d    %d", cows, bulls);
 	} else {
 		printf("%s", a);
 		for (int i = 0; i < lpadding-NUM; i++) {
 			putchar(' ');
 		}
-		printf("\t\t%d     %d", cows, bulls);
+		printf("\t\t%d    %d", cows, bulls);
 	}
 	
 	if (bulls == NUM) {
@@ -89,7 +88,9 @@ void printTable(const char a[MAX], const int cows, const int bulls, const bool b
 			} else {
 				printf("\n\nNo one beats the Godfather !");
 			}
-			printf("\n\ncomputer generated no. = %s", cnum);
+			printf("\n\ncomputer generated no. = %s\n", cnum);
+			fflush(stdin);
+			getchar();
 			exit(0);
 		} else {
 			if (!finished) {
@@ -100,7 +101,9 @@ void printTable(const char a[MAX], const int cows, const int bulls, const bool b
 		}
 	} else if (finished) {
 		printf("\n\nThe Godfather accepts the defeat !");
-		printf("\n\ncomputer generated no. = %s", cnum);
+		printf("\n\ncomputer generated no. = %s\n", cnum);
+		fflush(stdin);
+		getchar();
 		exit(0);
 	}
 }
@@ -108,7 +111,6 @@ void printTable(const char a[MAX], const int cows, const int bulls, const bool b
 void takenum(char a[MAX]) {
 	int len;
 	do{
-		
 		scanf("%s", a);
 		len = strlen(a);
 	}
@@ -262,7 +264,7 @@ void compchance() {
 	}
 }
 
-/* ********************************************************************************************/
+/**********************************************************************************************/
 
 void theOtherCase(void) {
 		// Set beta as a contender for alpha
@@ -275,7 +277,7 @@ void theOtherCase(void) {
 	post(primary);
 }
 
-/* ********************************************************************************************/
+/**********************************************************************************************/
 
 void bothUnconfirmed(void) {
 		// Save the value replaced in tempBeta :)
@@ -302,6 +304,9 @@ void bothUnconfirmed(void) {
 		pos = i;
 		primary[pos] = alpha;
 		post(primary);
+		
+		if (digitsConfirmed)
+			return;
 		
 			// If cows increase then alpha exits and beta doesn't else the opposite is true
 		if (cows > tempPrevCows) {
@@ -339,7 +344,7 @@ void bothUnconfirmed(void) {
 		// Finally out ... phew !
 	
 		// If alpha is wrong then beta is right and vice-versa
-	if (nums[beta-'0'] = !nums[alpha-'0']) {
+	if ((nums[beta-'0'] = !nums[alpha-'0'])) {
 			// If beta is right then exhange values with alpah thus making beta -> alpha
 		char c = alpha;
 		alpha = beta;
@@ -383,11 +388,11 @@ void bothUnconfirmed(void) {
 	post(primary);
 }
 
-/* ********************************************************************************************/
+/**********************************************************************************************/
 
 void intermediateDeduction() {
 		// Make intermediate deductions based on the digits of primary and their statuses
-	char tobeConfirmed[NUM];
+	char tobeConfirmed[10];
 	int noCount = 0, c = 0;
 	for (int i = 0, count = 0; i < 10 && count < MAX; i++) {
 			// If the digit is true then increase the count
@@ -450,6 +455,7 @@ void analysedDeduction() {
 		}
 	}
 }
+
 void deduce() {
 	/* Make deductions about beta like Sherlock Homes based on the status of alpha and the cows and bulls obtained
 	 and the cows and bulls obtained previously*/
@@ -580,7 +586,7 @@ void deduce() {
 	intermediateDeduction();
 }
 
-/* ********************************************************************************************/
+/**********************************************************************************************/
 
 void setBeta(int var) {
 		// Set the value of beta based on whether alpha is confirmed or not
@@ -591,7 +597,7 @@ void setBeta(int var) {
 			// Alpha is determined so get a unconfirmed beta
 		for (i = 0; i < NUM; i++) {
 			if (nums[primary[i]-'0'] == UNCONFIRMED) {
-				if (nums[primary[i]-'0'] == beta) {
+				if (primary[i] == beta) {
 						// Don't return the same beta as before - another silly precaution :D
 					continue;
 				}
@@ -623,7 +629,7 @@ void post(char a[]) {
 	analyse(a, unum, &cows, &bulls);
 	printTable(a, cows, bulls, YES);
 	
-	if ((cows+bulls) == 4 && !digitsConfirmed) {
+	if ((cows+bulls) == NUM && !digitsConfirmed) {
 			// Set all digits as true and rest as false
 		digitsConfirmed = YES;
 		for (int i = 0; i < 10; i++) {
@@ -744,10 +750,10 @@ void permutate(void) {
 		strcpy(a, primary);
 		rearrange();
 		if (!strcmp(a, primary)) {
-			positionDeduce();
+			permute(posNotConfirmed, 0, NUM-positions_confirmed);
 		}
 	} else {
-		positionDeduce();
+		permute(posNotConfirmed, 0, NUM-positions_confirmed);
 	}
 	post(primary);
 }
@@ -763,72 +769,6 @@ void merge() {
 	}
 }
 
-void positionDeduce() {
-	switch (positions_confirmed) {
-		case 2:
-			permute(posNotConfirmed, 0, 2);
-			break;
-			
-		case 1:
-			theCaseThree();
-			break;
-			
-		case 0:
-			theCaseFour();
-			break;
-	}
-}
-
-void theCaseFour() {
-	static int chance, firstBull;
-	chance++;
-	
-	if (chance == 1) {
-		firstBull = bulls;
-	}
-	
-	if (firstBull == 2) {
-			// Only any two values need to be interhcanged so its better to use this manual set than permute them - 4C2
-		switch (chance) {
-			case 1:
-				swap(posNotConfirmed, 0, 1);
-				break;
-				
-			case 2:
-				swap(posNotConfirmed, 0, 1);
-				
-				swap(posNotConfirmed, 2, 3);
-				break;
-				
-			case 3:
-				swap(posNotConfirmed, 2, 3);
-				
-				swap(posNotConfirmed, 0, 2);
-				break;
-				
-			case 4:
-				swap(posNotConfirmed, 0, 2);
-				
-				swap(posNotConfirmed, 0, 3);
-				break;
-				
-			case 5:
-				swap(posNotConfirmed, 0, 3);
-				
-				swap(posNotConfirmed, 1, 2);
-				break;
-				
-			case 6:
-				swap(posNotConfirmed, 0, 3);
-				
-				swap(posNotConfirmed, 1, 3);
-				break;
-		}
-		merge();
-	} else {
-		permute(posNotConfirmed, 0, 4);
-	}
-}
 char ex;
 bool exSet = NO;
 void permute(char v[], const int start, const int n) {
@@ -840,7 +780,7 @@ void permute(char v[], const int start, const int n) {
             for(j=i+1; j<n; j++)
             {
                 swap(v,i,j);
-                permute(v,i+1,n);
+				permute(v,i+1,n);
             }
             shiftLeft(v,i,n);
         }
@@ -860,9 +800,6 @@ void permute(char v[], const int start, const int n) {
 	}
 }
 
-/*==============================
- Function swap
- ==============================*/
 void swap(char v[],int i,int j)
 {
     char t = v[i];
@@ -870,9 +807,6 @@ void swap(char v[],int i,int j)
     v[j] = t;
 }
 
-/*===========================
- Function shift left
- ===========================*/
 void shiftLeft(char v[],int go,int n)
 {
     int tmp = v[go];
@@ -881,55 +815,6 @@ void shiftLeft(char v[],int go,int n)
         v[i] = v[i+1];
     }
     v[n-1] = tmp;
-}
-
-void theCaseThree() {
-	static int chance;
-	static int firstBull;
-	static char a, b, c;
-	chance++;
-	
-	if (chance == 1) {
-		a = posNotConfirmed[0];
-		b = posNotConfirmed[1];
-		c = posNotConfirmed[2];
-		firstBull = bulls;
-	}
-	if (firstBull == 1) {
-		switch (chance) {
-			case 1:
-					// Swap the digits at second position and 3rd positon => b and c
-					// * Note - No one touches the guy at position no.1 - he's the King
-				printf("\nThe case 3;) = %s\n", primary);
-				posNotConfirmed[1] = c;
-				posNotConfirmed[2] = b;
-				break;
-				
-			case 2:
-					// Obviosuly the bulls increase by 1 - check because of whom ?
-					// Swap c and a
-				posNotConfirmed[1] = a;
-				posNotConfirmed[0] = c;
-				break;
-				
-			case 3:
-					// If the bulls decrease then the previous increase was due to c else due to b
-				if (bulls < previousBulls) {
-					posNotConfirmed[1] = c;
-					posNotConfirmed[0] = b;
-					posNotConfirmed[2] = a;
-				} else {
-					posNotConfirmed[0] = c;
-					posNotConfirmed[1] = a;
-				}
-				
-				break;
-		}
-		merge();
-	} else {
-		permute(posNotConfirmed, 0, 3);
-	}
-	
 }
 
 char pop() {
