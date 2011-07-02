@@ -147,10 +147,12 @@ bool validate(char a[MAX]) {
 
 int cows1, cows2, bulls1, bulls2, previousCows, previousBulls, cows, bulls, pos;
 char firstNum[MAX], secondNum[MAX], primary[MAX], secondary[MAX], alpha, beta;
-bool found = NO, digitsConfirmed = NO;
-int nums[10], alphaContenderCount = 0;
-char alphaContenders[6];
+bool found = NO, digitsConfirmed = NO, cPlusB[20];
+int nums[10], alphaContenderCount = 0, guessNum = 0;
+char alphaContenders[NUM], guesses[20][NUM];
 char posns[MAX];
+char ex;
+bool exSet = NO;
 
 void compchance() {
 	static int chance;
@@ -180,12 +182,12 @@ void compchance() {
 		/* If this is the second chance then generate a random num and assign it to secondNum 
 		 check for the cows and bulls to see if you get any confirmation !*/
 		randnum(secondNum);
-		srandom(time(NULL));
+		srand(time(NULL));
 		for (int i = 0; i < NUM; i++) {
 			for (int j = 0; j < NUM; j++) {
 				if (secondNum[i] == firstNum[j]) {
 					do {
-						secondNum[i] = '0' + (random()%9+(i==0));
+						secondNum[i] = '0' + (rand()%9+(i==0));
 					} while (!validate(secondNum));
 					i = -1;
 					break;
@@ -381,7 +383,7 @@ void bothUnconfirmed(void) {
 		// If no unconfirmed beta exists then set new alpha and beta as an random digit from primary
 	if (!found) {
 		alpha = pop();
-		beta = primary[random()%3+(alpha=='0')]; // If alpha is '0' then the position should not be 0
+		beta = primary[rand()%(3+(alpha!='0'))+(alpha=='0')]; // If alpha is '0' then the position should not be 0
 	}
 	
 	primary[pos] = alpha;
@@ -427,31 +429,33 @@ void intermediateDeduction() {
 
 void analysedDeduction() {
 		// if the number of numbers which are false = NUM - (cows+bulls) then the rest are true and vice-versa
-	int notYesCount = 0, notNoCount = 0, yesCount = 0;
-	int noCount = 0;
-	char notYesStack[NUM];
-	char notNoStack[NUM];
-	for (int i = 0; i < NUM; i++) {
-		if (nums[primary[i]-'0'] == NO) {
-			noCount++;
-		} else {
-			notNoStack[notNoCount++] = primary[i];
+	for (int k = 0; k < guessNum; k++) {
+		int notYesCount = 0, notNoCount = 0, yesCount = 0;
+		int noCount = 0;
+		char notYesStack[NUM];
+		char notNoStack[NUM];
+		for (int i = 0; i < NUM; i++) {
+			if (nums[guesses[k][i]-'0'] == NO) {
+				noCount++;
+			} else {
+				notNoStack[notNoCount++] = guesses[k][i];
+			}
+			if (nums[guesses[k][i]-'0'] == YES) {
+				yesCount++;
+			} else {
+				notYesStack[notYesCount++] = guesses[k][i];
+			}
 		}
-		if (nums[primary[i]-'0'] == YES) {
-			yesCount++;
-		} else {
-			notYesStack[notYesCount++] = primary[i];
+		
+		if (yesCount == cPlusB[k]) {
+			for (int i = 0; i < notYesCount; i++) {
+				nums[notYesStack[i]-'0'] = NO;
+			}
 		}
-	}
-	
-	if (yesCount == cows+bulls) {
-		for (int i = 0; i < notYesCount; i++) {
-			nums[notYesStack[i]-'0'] = NO;
-		}
-	}
-	if (noCount == NUM-(cows+bulls)) {
-		for (int i = 0; i < notNoCount; i++) {
-			nums[notNoStack[i]-'0'] = YES;
+		if (noCount == NUM-cPlusB[k]) {
+			for (int i = 0; i < notNoCount; i++) {
+				nums[notNoStack[i]-'0'] = YES;
+			}
 		}
 	}
 }
@@ -592,7 +596,7 @@ void setBeta(int var) {
 		// Set the value of beta based on whether alpha is confirmed or not
 	int i;
 	
-	srandom(time(NULL));
+	srand(time(NULL));
 	if (var == BETA) {
 			// Alpha is determined so get a unconfirmed beta
 		for (i = 0; i < NUM; i++) {
@@ -611,7 +615,7 @@ void setBeta(int var) {
 			// Alpha is undetermined so get a determined beta
 		char tempBeta;
 		do {
-			i = random()%3;
+			i = rand()%4;
 			tempBeta = primary[i];
 		} while (tempBeta == beta || nums[tempBeta-'0'] == UNCONFIRMED);
 		pos = i;
@@ -622,12 +626,14 @@ void setBeta(int var) {
 void post(char a[]) {
 	previousCows = cows;
 	previousBulls = bulls;
-	a[NUM] = '\0';
 	if (!validate(a)) {
 		printf("\n\nInvalid Input - %s\n\n", a);
 	}
 	analyse(a, unum, &cows, &bulls);
 	printTable(a, cows, bulls, YES);
+	guesses[guessNum][NUM] = '\0';
+	strcpy(guesses[guessNum], a);
+	cPlusB[guessNum++] = (cows+bulls);
 	
 	if ((cows+bulls) == NUM && !digitsConfirmed) {
 			// Set all digits as true and rest as false
@@ -653,10 +659,10 @@ void post(char a[]) {
 void randnum(char a[MAX]) {
 		//Generate a random number with unique digits
 	register int i;
-	srandom(time(NULL));
+	srand(time(NULL));
 	do {
 		for (i = 0; i < NUM;i++)
-			a[i] = '0'+ (random()%9+(i==0));
+			a[i] = '0'+ (rand()%(9+(i!=0))+(i==0));
 	}
 	while (!validate(a));
 	a[NUM] = '\0';
@@ -718,6 +724,9 @@ void rearrange() {
 			for (int k = 0; k < NUM; k++) {
 					// Add the digit with unconfirmed position to s[] at the next empty slot
 				if (s[k] == WILDCARD) {
+					if (k == 0 && primary[i] == '0') {
+						continue;
+					}
 					posNotConfirmed[posNotConfirmedCount++] = s[k] = primary[i];
 					break;
 				}
@@ -729,9 +738,8 @@ void rearrange() {
 	/* Check wether first position is unconfirmed and stack of unconfirmed digits starts with '0'
 	 since the 0 will be placed at first palce*/
 	if (posns[0] == WILDCARD && posNotConfirmed[0] == '0') {
-		char temp = posNotConfirmed[0];
 		posNotConfirmed[0] = posNotConfirmed[1];
-		posNotConfirmed[1] = temp;
+		posNotConfirmed[1] = '0';
 		merge();
 	}
 		// Pad the ending of s[] with '\0' for proper copying in strcpy()
@@ -744,16 +752,31 @@ void permutate(void) {
 	static int chance;
 	chance++;
 	
-	if (chance == 1) {
-			// On first chance rearrange primary to bring back the confirmed digits
-		char a[MAX];
-		strcpy(a, primary);
-		rearrange();
-		if (!strcmp(a, primary)) {
-			permute(posNotConfirmed, 0, NUM-positions_confirmed);
+	switch (chance) {
+		case 1:
+		{
+				// On first chance rearrange primary to bring back the confirmed digits
+			char a[MAX];
+			a[NUM] = '\0';
+			strcpy(a, primary);
+			rearrange();
+			if (!strcmp(a, primary)) {
+				permute(posNotConfirmed, 0, NUM-positions_confirmed);
+			}
 		}
-	} else {
-		permute(posNotConfirmed, 0, NUM-positions_confirmed);
+			break;
+			
+		case 2:
+		{
+			if (!bulls) {
+				exSet = YES;
+				ex = primary[0];
+			}
+		}
+
+		default:
+			permute(posNotConfirmed, 0, NUM-positions_confirmed);
+			break;
 	}
 	post(primary);
 }
@@ -769,8 +792,6 @@ void merge() {
 	}
 }
 
-char ex;
-bool exSet = NO;
 void permute(char v[], const int start, const int n) {
 	if (start<n)
     {
@@ -825,9 +846,9 @@ char pop() {
 	char c;
 	
 	if (chance <= 4 && alphaContenderCount > 1) {
-		srandom(time(NULL));
+		srand(time(NULL));
 		do {
-			i = random()%(alphaContenderCount);
+			i = rand()%alphaContenderCount;
 			c = alphaContenders[i];
 		} while (c == prev);
 	} else {
