@@ -149,7 +149,7 @@ int cows1, cows2, bulls1, bulls2, previousCows, previousBulls, cows, bulls, pos;
 char firstNum[MAX], secondNum[MAX], primary[MAX], secondary[MAX], alpha, beta;
 bool found = NO, digitsConfirmed = NO, cPlusB[20];
 int nums[10], alphaContenderCount = 0, guessNum = 0;
-char alphaContenders[NUM], guesses[20][NUM];
+char alphaContenders[NUM], guesses[20][NUM+1];
 char posns[MAX];
 char ex;
 bool exSet = NO;
